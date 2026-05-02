@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrowthEX Partners — Business Health Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1e4fc2;--steel:#2d5be3;--accent:#4a7fff;--dark:#05080f;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);}
+body{font-family:'Inter',sans-serif;background:var(--dark);color:#fff;min-height:100vh;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 85% 50% at 50% -5%,rgba(30,79,194,.28) 0%,transparent 65%),linear-gradient(160deg,#03060e,#07091a);}
+.grid{position:fixed;inset:0;z-index:0;opacity:.027;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:60px 60px;}
+
+/* HEADER */
+header{position:relative;z-index:10;height:66px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,8,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.h-logo{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;}.h-logo span{color:#4a7fff;}
+.h-chip{background:rgba(30,79,194,.18);border:1px solid rgba(30,79,194,.32);color:#7aadff;padding:6px 13px;border-radius:18px;font-size:12px;font-weight:600;display:none;}
+
+/* PROGRESS BAR */
+#progBar{position:relative;z-index:10;padding:0 40px;background:rgba(0,0,0,.25);border-bottom:1px solid var(--border);display:none;}
+.prog-inner{max-width:760px;margin:0 auto;padding:13px 0;}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-lbl{font-size:12px;color:#6b7a99;font-weight:600;}
+.prog-cnt{font-size:12px;font-weight:700;color:var(--accent);}
+.prog-track{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--accent));border-radius:3px;transition:width .5s ease;}
+.prog-dots{display:flex;gap:3px;margin-top:7px;}
+.pdot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.06);transition:background .4s;}
+.pdot.done{background:rgba(30,79,194,.7);}
+.pdot.cur{background:var(--accent);}
+
+/* ── SCREENS ── */
+/* ACCESS */
+#accessScreen{position:relative;z-index:1;min-height:calc(100vh - 66px);display:flex;align-items:center;justify-content:center;padding:24px;}
+.access-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:48px 40px;max-width:400px;width:100%;text-align:center;}
+.ac-logo{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:18px;}.ac-logo span{color:#4a7fff;}
+.ac-card h2{font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:6px;}
+.ac-card p{color:rgba(255,255,255,.42);font-size:13px;margin-bottom:26px;}
+.ai{width:100%;padding:13px 14px;border-radius:9px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);color:#fff;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .25s;margin-bottom:13px;-webkit-appearance:none;}
+.ai::placeholder{color:rgba(255,255,255,.24);}
+.ai:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,79,194,.13);}
+.ai-note{font-size:11px;color:rgba(255,255,255,.22);margin-bottom:14px;text-align:left;}
+.ac-btn{width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--blue),var(--steel));color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;}
+.ac-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(30,79,194,.46);}
+.ac-err{color:#fc8181;font-size:13px;margin-top:10px;display:none;}
+
+/* INTRO */
+#introScreen{position:relative;z-index:1;min-height:calc(100vh - 66px);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:50px 24px;}
+.ey{display:inline-flex;align-items:center;gap:8px;background:rgba(74,127,255,.1);border:1px solid rgba(74,127,255,.28);color:#7aadff;padding:8px 20px;border-radius:40px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:30px;}
+.ey-dot{width:6px;height:6px;background:#4a7fff;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.7)}}
+.in-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,6.5vw,76px);font-weight:700;line-height:1.06;margin-bottom:18px;}
+.in-h1 em{font-style:italic;background:linear-gradient(135deg,#4a7fff,#a8caff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.in-sub{font-size:clamp(14px,1.8vw,18px);color:rgba(255,255,255,.54);max-width:600px;line-height:1.78;margin-bottom:38px;}
+.in-pills{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:46px;}
+.pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:9px 16px;border-radius:9px;font-size:13px;font-weight:500;}
+.start-btn{padding:19px 54px;background:linear-gradient(135deg,var(--blue),var(--steel));color:#fff;border:none;border-radius:13px;font-family:'Inter',sans-serif;font-size:17px;font-weight:800;cursor:pointer;transition:all .3s;box-shadow:0 10px 32px rgba(30,79,194,.42);}
+.start-btn:hover{transform:translateY(-4px);box-shadow:0 18px 46px rgba(30,79,194,.6);}
+
+/* QUESTION */
+#qScreen{position:relative;z-index:1;display:none;padding:34px 24px 80px;}
+.qwrap{max-width:730px;margin:0 auto;}
+.q-num{font-size:11px;color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:11px;}
+.q-text{font-family:'Cormorant Garamond',serif;font-size:clamp(21px,3.8vw,33px);font-weight:700;line-height:1.32;margin-bottom:9px;}
+.q-dim{display:inline-block;background:rgba(74,127,255,.1);border:1px solid rgba(74,127,255,.22);color:#7aadff;padding:4px 11px;border-radius:18px;font-size:11px;font-weight:700;margin-bottom:26px;}
+.opts{display:flex;flex-direction:column;gap:11px;}
+.opt{background:var(--card);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;padding:17px 20px;cursor:pointer;transition:all .27s;display:flex;align-items:center;gap:14px;user-select:none;}
+.opt:hover{border-color:rgba(74,127,255,.42);background:rgba(74,127,255,.07);}
+.opt.selected{border-color:var(--blue);background:rgba(30,79,194,.14);}
+.opt-l{width:32px;height:32px;border-radius:8px;border:1.5px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .27s;}
+.opt.selected .opt-l{background:var(--blue);border-color:var(--blue);color:#fff;}
+.opt-t{font-size:14px;line-height:1.52;}
+.qnav{display:flex;gap:11px;margin-top:30px;justify-content:space-between;flex-wrap:wrap;}
+.btn-prev{padding:12px 26px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(255,255,255,.68);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;}
+.btn-prev:hover{background:rgba(255,255,255,.1);color:#fff;}
+.btn-prev:disabled{opacity:.3;cursor:not-allowed;}
+.btn-next{padding:12px 32px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--blue),var(--steel));color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .27s;box-shadow:0 5px 18px rgba(30,79,194,.36);}
+.btn-next:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 9px 26px rgba(30,79,194,.54);}
+.btn-next:disabled{opacity:.36;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-restart{padding:12px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.38);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;}
+.btn-restart:hover{color:rgba(255,255,255,.65);border-color:rgba(255,255,255,.2);}
+
+/* RESULT */
+#resultScreen{position:relative;z-index:1;display:none;padding:38px 24px 80px;}
+.rwrap{max-width:800px;margin:0 auto;}
+.score-hero{text-align:center;margin-bottom:48px;}
+.ring-wrap{width:158px;height:158px;margin:0 auto 20px;position:relative;display:flex;align-items:center;justify-content:center;}
+.ring-wrap svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.ring-inner{text-align:center;}
+.r-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;line-height:1;}
+.r-of{font-size:13px;color:#6b7a99;}
+.r-cat{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;margin-bottom:9px;}
+.r-summary{font-size:15px;color:rgba(255,255,255,.56);max-width:640px;margin:0 auto;line-height:1.78;}
+
+.res-sec{background:var(--card);border:1px solid var(--border);border-radius:17px;padding:28px;margin-bottom:22px;}
+.sec-lbl{font-size:10px;font-weight:700;color:#6b7a99;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
+.dim-item{margin-bottom:16px;}.dim-item:last-child{margin-bottom:0;}
+.dim-row{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:5px;}
+.dim-track{height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+.dim-fill{height:100%;border-radius:4px;transition:width 1.2s ease;}
+
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:22px;}
+.svc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:24px;transition:all .3s;position:relative;overflow:hidden;}
+.svc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--steel));}
+.svc.urgent::before{background:linear-gradient(90deg,#e53e3e,#fc8181);}
+.svc:hover{border-color:rgba(74,127,255,.26);transform:translateY(-4px);}
+.svc-ico{font-size:28px;margin-bottom:12px;}
+.svc h3{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;margin-bottom:8px;}
+.svc p{font-size:13px;color:rgba(255,255,255,.54);line-height:1.7;}
+.svc-badge{display:inline-block;margin-top:11px;padding:4px 11px;border-radius:18px;font-size:11px;font-weight:700;background:rgba(30,79,194,.2);border:1px solid rgba(30,79,194,.34);color:#7aadff;}
+.svc-badge.urg{background:rgba(229,62,62,.18);border-color:rgba(229,62,62,.34);color:#fc8181;}
+
+.cta-box{background:linear-gradient(135deg,rgba(30,79,194,.17),rgba(45,91,227,.08));border:1px solid rgba(30,79,194,.27);border-radius:17px;padding:32px;text-align:center;margin-bottom:22px;}
+.cta-box h3{font-family:'Cormorant Garamond',serif;font-size:25px;margin-bottom:10px;}
+.cta-box p{color:rgba(255,255,255,.54);font-size:14px;margin-bottom:24px;max-width:540px;margin-left:auto;margin-right:auto;line-height:1.75;}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.wa-btn{display:inline-flex;align-items:center;gap:9px;padding:14px 30px;background:linear-gradient(135deg,#25d366,#1da851);color:#fff;border:none;border-radius:11px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;box-shadow:0 6px 20px rgba(37,211,102,.3);}
+.wa-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(37,211,102,.44);}
+.web-btn{display:inline-flex;align-items:center;gap:9px;padding:14px 28px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.16);color:#fff;border-radius:11px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .3s;}
+.web-btn:hover{background:rgba(255,255,255,.1);transform:translateY(-3px);}
+
+.ins-item{border-bottom:1px solid rgba(255,255,255,.05);padding:14px 0;}
+.ins-item:last-child{border-bottom:none;}
+.ins-meta{font-size:10px;color:#6b7a99;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.ins-q{font-size:13px;font-weight:600;margin-bottom:5px;line-height:1.4;}
+.ins-a{font-size:12px;color:rgba(255,255,255,.5);}
+.ins-reco{font-size:12px;color:#7aadff;margin-top:4px;}
+.ins-pts{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;margin-left:7px;}
+
+.retry-wrap{text-align:center;margin-top:14px;}
+.retry-btn{padding:10px 26px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.52);border-radius:9px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;transition:all .25s;}
+.retry-btn:hover{color:#fff;border-color:rgba(255,255,255,.24);}
+
+@media(max-width:680px){
+  header{padding:0 16px;}
+  #progBar{padding:0 16px;}
+  .opts{gap:9px;}
+  .opt{padding:14px 15px;}
+  .qnav{flex-direction:column-reverse;}
+  .btn-prev,.btn-next,.btn-restart{width:100%;text-align:center;}
+  .cta-btns{flex-direction:column;align-items:stretch;}
+  .wa-btn,.web-btn{justify-content:center;}
+}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grid"></div>
+
+<header>
+  <div class="h-logo"><span>G</span>rowth<span>EX</span> Partners</div>
+  <div class="h-chip" id="hChip"></div>
+</header>
+
+<div id="progBar">
+  <div class="prog-inner">
+    <div class="prog-top">
+      <span class="prog-lbl" id="progLbl">Business Health Assessment</span>
+      <span class="prog-cnt" id="progCnt">1 / 20</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:5%"></div></div>
+    <div class="prog-dots" id="progDots"></div>
+  </div>
+</div>
+
+<!-- ACCESS -->
+<div id="accessScreen">
+  <div class="access-card ac-card">
+    <div class="ac-logo"><span>G</span>rowth<span>EX</span> Partners</div>
+    <h2>Access Your Assessment</h2>
+    <p>Enter the credentials shared by your GrowthEX consultant</p>
+    <input class="ai" type="text" id="accUser" placeholder="Username" autocomplete="username">
+    <input class="ai" type="password" id="accPass" placeholder="Password" autocomplete="current-password">
+    <input class="ai" type="tel" id="accWA" placeholder="Your WhatsApp number (optional)" style="margin-bottom:4px;">
+    <p class="ai-note">Optional — your report will be shared on WhatsApp after completion</p>
+    <button class="ac-btn" id="accessBtn">🚀 Start My Assessment</button>
+    <div class="ac-err" id="accErr"></div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div id="introScreen">
+  <div class="ey"><div class="ey-dot"></div>GrowthEX Partners — Exclusive Diagnostic</div>
+  <div class="in-h1">Your Business<br><em>Health Assessment</em></div>
+  <p class="in-sub" id="introSub">20 industry-specific questions to diagnose the exact state of your business — and reveal precisely what needs to change to unlock your next growth level.</p>
+  <div class="in-pills">
+    <div class="pill">🕐 ~8 minutes</div>
+    <div class="pill">❓ 20 questions</div>
+    <div class="pill">📊 Industry-specific</div>
+    <div class="pill">📲 WhatsApp report</div>
+  </div>
+  <button class="start-btn" id="startBtn">Begin Assessment →</button>
+</div>
+
+<!-- QUESTION -->
+<div id="qScreen">
+  <div class="qwrap">
+    <div class="q-num" id="qNum">Question 1 of 20</div>
+    <div class="q-text" id="qText"></div>
+    <div class="q-dim" id="qDim"></div>
+    <div class="opts" id="opts"></div>
+    <div class="qnav">
+      <div style="display:flex;gap:9px;">
+        <button class="btn-prev" id="prevBtn">← Previous</button>
+        <button class="btn-restart" id="restartBtn">↺ Restart</button>
+      </div>
+      <button class="btn-next" id="nextBtn" disabled>Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="resultScreen">
+  <div class="rwrap">
+    <div class="score-hero">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 158 158" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="79" cy="79" r="67" stroke="rgba(255,255,255,0.07)" stroke-width="10"/>
+          <circle id="ringCircle" cx="79" cy="79" r="67" stroke="#1e4fc2" stroke-width="10"
+            stroke-dasharray="421" stroke-dashoffset="421" stroke-linecap="round"
+            style="transition:stroke-dashoffset 1.6s ease,stroke 0.5s ease;"/>
+        </svg>
+        <div class="ring-inner">
+          <div class="r-num" id="rNum">0</div>
+          <div class="r-of">/100</div>
+        </div>
+      </div>
+      <div class="r-cat" id="rCat"></div>
+      <p class="r-summary" id="rSummary"></p>
+    </div>
+    <div class="res-sec"><div class="sec-lbl">📊 Business Dimension Analysis</div><div id="dimBars"></div></div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;margin-bottom:16px;">🎯 Recommended Solutions For Your Business</div>
+    <div class="svc-grid" id="svcGrid"></div>
+    <div class="cta-box">
+      <h3>Take Action — Your Business Cannot Wait</h3>
+      <p id="ctaTxt"></p>
+      <div class="cta-btns">
+        <button class="wa-btn" id="waShareBtn">📲 Share Report on WhatsApp</button>
+        <a href="https://www.growthexpartners.com" target="_blank" class="web-btn">🌐 Explore GrowthEX Solutions →</a>
+      </div>
+    </div>
+    <div class="res-sec"><div class="sec-lbl">📝 Detailed Question Analysis</div><div id="insightsWrap"></div></div>
+    <div class="retry-wrap"><button class="retry-btn" id="retryBtn">↺ Retake Assessment</button></div>
+  </div>
+</div>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+// ════════════════════════════════════════════════════════
+// QUESTION BANK — 20 per industry
+// ════════════════════════════════════════════════════════
+var QB = {
+'default':[
+  {q:"How clearly defined are the roles and responsibilities of every person in your organisation?",opts:["No defined roles — everyone does everything","Some roles exist but there is significant overlap","Most roles are clear but accountability gaps remain","All roles clearly defined with written job descriptions","Roles, KPIs, and accountability fully documented and enforced"],dim:"Structure"},
+  {q:"When you step away from operations for a week, what happens to your business?",opts:["It essentially stops — major problems arise immediately","Major slowdowns and constant calls from the team","Moderate issues that require my remote guidance","Minor issues — team handles most things independently","Business runs completely without me — no calls, no issues"],dim:"Systems"},
+  {q:"How would you rate the quality and availability of your Standard Operating Procedures (SOPs)?",opts:["No SOPs — everything lives in people's heads","Minimal documentation for a few key processes only","Partial SOPs — some critical processes documented","Good SOPs for most processes, updated regularly","Comprehensive SOPs for every process, continuously improved"],dim:"Systems"},
+  {q:"How effectively does your leadership team make decisions without escalating everything to you?",opts:["Every single decision comes to me — I make every call","Most decisions require my input or approval","Senior decisions reach me but operational ones don't","Leadership makes most decisions independently","Full autonomous decision-making with proper frameworks"],dim:"Leadership"},
+  {q:"How would you describe the current profitability health of your business?",opts:["Revenue exists but profit is unclear or negative","We make profit but margins are thin and inconsistent","Decent margins but significant profit potential untapped","Healthy margins with clear visibility into profitability","Excellent margins with continuous optimisation systems"],dim:"Finance"},
+  {q:"How well do you understand your exact cost structure and where money is being lost?",opts:["No visibility into costs — numbers are very unclear","Basic understanding but many hidden cost areas exist","Good understanding of major costs, some leakages remain","Clear cost visibility with regular review systems","Complete financial intelligence — every cost tracked and optimised"],dim:"Finance"},
+  {q:"How aligned is your team toward a common business goal or quarterly target?",opts:["Team works in silos — no shared direction whatsoever","Awareness of general goals but very low actual alignment","Moderate alignment — some teams connected, others not","Strong alignment with regular goal review meetings","Full alignment — every person knows the target and their contribution"],dim:"Culture"},
+  {q:"How do you currently measure the productivity and output of your team?",opts:["No measurement — going entirely by gut feel","Occasional check-ins but no structured metrics at all","Basic KPIs tracked but inconsistently reviewed","Regular KPI reviews with clear accountability systems","Sophisticated tracking with real-time dashboards and consequences"],dim:"Performance"},
+  {q:"How would you rate the quality and speed of your core operational processes?",opts:["Processes are chaotic and break down frequently","Slow and error-prone but eventually get done","Moderate quality — some smooth, some problematic","Generally efficient with some optimisation opportunities","Highly optimised delivering consistent, fast, quality output"],dim:"Operations"},
+  {q:"How effectively does your business retain talent and maintain a motivated culture?",opts:["High turnover — key people leave frequently","Moderate retention but overall engagement is low","Decent retention with some cultural challenges","Strong culture with low turnover and high engagement","Exceptional culture — people are highly motivated and deeply loyal"],dim:"Culture"},
+  {q:"How clear is your customer acquisition process and sales pipeline?",opts:["No defined process — sales are ad hoc and unpredictable","Some process exists but conversion is highly inconsistent","Defined pipeline with moderate predictability","Strong process with good conversion rate tracking","Systematic sales engine with predictable, scalable revenue"],dim:"Sales"},
+  {q:"How well do you understand and proactively manage your key business risks?",opts:["No risk awareness or mitigation systems exist","Aware of major risks but no structured mitigation plan","Some monitoring with basic contingency plans in place","Good risk management with documented strategies","Comprehensive risk register with proactive monitoring"],dim:"Risk"},
+  {q:"How scalable are your current systems and infrastructure for 2× or 3× growth?",opts:["Current setup would break at any significant growth","Significant rebuilding required before meaningful scaling","Moderate — can handle some growth with adjustments","Good scalability with minor enhancements needed","Fully scalable — ready to 3× without fundamental changes"],dim:"Systems"},
+  {q:"How data-driven are your business decisions on a day-to-day basis?",opts:["Decisions are based entirely on gut feel and instinct","Occasional data reference but mostly intuitive decisions","Mix of data and intuition with growing data usage","Primarily data-driven with established reporting dashboards","Fully data-driven with AI-assisted insights and predictions"],dim:"Performance"},
+  {q:"How visible is your brand and business to your ideal target customers?",opts:["Very low — most growth is word of mouth only","Some awareness but inconsistent and very limited reach","Moderate visibility with growing but uneven presence","Good visibility with active and effective marketing","Excellent recognition with dominant market presence"],dim:"Sales"},
+  {q:"How clearly have you defined your next 12-month growth strategy?",opts:["No strategy — reacting month to month with no plan","Vague direction but no documented strategic plan","General strategy but lacks execution detail","Clear 12-month strategy with quarterly milestones","Comprehensive roadmap with monthly targets and accountability"],dim:"Leadership"},
+  {q:"How efficient is your cash flow management and working capital utilisation?",opts:["Frequent cash crunches — a constant challenge","Irregular cash flow with occasional serious difficulties","Moderate management with some optimisation needed","Good cash flow management with clear forecasting","Exceptional optimisation with automated systems and projections"],dim:"Finance"},
+  {q:"How would you rate the quality of communication and information flow internally?",opts:["Information siloed — teams do not communicate effectively","Poor communication causing frequent misalignments","Average communication with noticeable information gaps","Good systems with most information flowing effectively","Excellent infrastructure — seamless sharing across all levels"],dim:"Culture"},
+  {q:"How effectively do you leverage technology and automation in your operations?",opts:["Minimal technology — mostly manual processes throughout","Basic tools used but significant manual work remains","Moderate adoption with key processes automated","Good integration with meaningful automation in place","Advanced tech stack with extensive automation and efficiency gains"],dim:"Operations"},
+  {q:"If you were to exit your business today, how self-sustaining and valuable would it be?",opts:["No value without me — I am the business entirely","Very low standalone value — heavily owner dependent","Some value — can run partially but needs me for key things","Good standalone value — operates and grows without me","Exceptional standalone value — fully independent at full capacity"],dim:"Systems"}
+],
+'Manufacturing & Production':[
+  {q:"How standardised and documented are your production processes and quality control systems?",opts:["No standardisation — each batch produced differently","Basic standards rarely enforced consistently","Moderate standardisation with periodic quality checks","Good standards with regular QC audits and documentation","ISO-level documentation with real-time quality monitoring"],dim:"Operations"},
+  {q:"How effectively do you manage and optimise your supply chain and vendor relationships?",opts:["No vendor management — entirely reactive purchasing","Some preferred vendors but no formal management","Basic evaluation with periodic relationship reviews","Strong vendor management with clear SLAs and backup suppliers","Best-in-class supply chain with strategic vendor partnerships"],dim:"Operations"},
+  {q:"How well do you track machine utilisation, downtime, and Overall Equipment Effectiveness?",opts:["No machine performance tracking at all","Manual logs only — data often inaccurate or delayed","Basic tracking with monthly reviews of key equipment","Regular OEE tracking with active improvement initiatives","Real-time OEE dashboard with predictive maintenance protocols"],dim:"Performance"},
+  {q:"How accurate and efficient is your inventory management and procurement system?",opts:["No formal system — frequent shortages and overstocking","Manual counts with frequent errors and mismatches","Basic software used but not optimised for accuracy","Good system with regular cycle counts and reorder points","Advanced management with demand forecasting and auto-procurement"],dim:"Systems"},
+  {q:"How clearly defined are roles across your production floor and management team?",opts:["No defined roles — everyone does everything","Some roles defined but significant overlap exists","Most roles clear but accountability gaps remain","All roles clearly defined with written job descriptions","Roles, KPIs, and accountability fully documented and enforced"],dim:"Structure"},
+  {q:"When you step away from production for a week, what typically happens?",opts:["Production stops or major quality issues arise","Major slowdowns requiring constant emergency calls","Moderate issues managed with my remote guidance","Minor issues — production team handles independently","Full autonomous production maintaining quality and output"],dim:"Systems"},
+  {q:"How well do you track, control, and reduce production costs and material waste?",opts:["No cost or waste tracking — unclear where money is lost","Basic cost tracking but waste measurement absent","Moderate control with some active waste reduction efforts","Good visibility with active waste reduction programs","Lean manufacturing fully implemented with real-time dashboards"],dim:"Finance"},
+  {q:"How effectively does your leadership make production decisions without you?",opts:["Every decision requires my direct involvement","Most operational decisions need my input","Senior production issues reach me; routine ones handled","Production managers make most decisions independently","Full autonomy with clearly defined escalation frameworks"],dim:"Leadership"},
+  {q:"How aligned is your workforce toward production targets and quality goals?",opts:["No shared targets — teams work in complete isolation","Awareness of goals but very low practical alignment","Moderate alignment with regular team briefings","Strong alignment with daily huddles and visual management boards","Complete alignment — every worker knows target and performance live"],dim:"Culture"},
+  {q:"How scalable is your production capacity for 2× volume growth without major disruption?",opts:["Cannot scale — current setup at capacity or breaking","Significant investment and restructuring needed first","Can grow 30–40% with some adjustments and investment","Good scalability with planned capacity expansion roadmap","Fully scalable — expansion processes standardised and systematic"],dim:"Systems"},
+  {q:"How do you currently measure and systematically reduce your product defect rate?",opts:["No quality measurement — complaints are the only feedback","Basic quality checks but no formal defect tracking","Defect rate tracked with periodic improvement reviews","Systematic quality management with root cause analysis","Six Sigma level — defect rates tracked and systematically eliminated"],dim:"Performance"},
+  {q:"How well defined is your business continuity plan for equipment failure or supply disruption?",opts:["No plan — crises handled reactively with no preparation","Some awareness of risks but no formal plan exists","Basic contingency plans for major equipment failure","Documented plan with backup vendor lists and protocols","Fully tested plan with backup systems and regular simulations"],dim:"Risk"},
+  {q:"How effectively does your operation leverage automation and Industry 4.0 technology?",opts:["Minimal automation — almost entirely manual labour","Some basic automation in isolated processes only","Moderate automation with key processes semi-automated","Good coverage with meaningful efficiency gains achieved","Advanced automation with IoT and minimal manual intervention"],dim:"Systems"},
+  {q:"How data-driven is your production planning, scheduling, and capacity management?",opts:["Entirely gut-based — production planned informally","Basic spreadsheet planning with frequent adjustments","ERP or planning software used but significantly underutilised","Strong data-driven planning with good forecast accuracy","AI-assisted planning with real-time demand signals and auto-scheduling"],dim:"Performance"},
+  {q:"How clear is your per-unit cost structure and cash flow across all product lines?",opts:["No visibility into cash flow or unit economics at all","Basic cash flow awareness but unit costs very unclear","Moderate visibility with quarterly cost reviews","Clear cash flow management with per-product cost analysis","Complete intelligence — real-time dashboards and per-unit profitability"],dim:"Finance"},
+  {q:"How effectively do you retain skilled workers and maintain strong floor morale?",opts:["High attrition — losing skilled workers frequently","Moderate retention but morale and engagement are low","Decent retention with some cultural challenges","Strong retention with career paths and recognition programs","Excellent retention with industry-leading culture and training"],dim:"Culture"},
+  {q:"How effectively do you track on-time delivery performance and customer satisfaction?",opts:["No tracking — customer complaints are the only signal","Basic delivery tracking with manual follow-up only","Delivery tracking with moderate on-time performance","Good OTD performance with structured customer feedback","Excellent OTD rates with systematic CSAT measurement"],dim:"Sales"},
+  {q:"How would you rate your profitability and margin optimisation across your product portfolio?",opts:["Profitability unclear — running on thin or negative margins","Aware of margins but very limited ability to improve them","Moderate margins with some improvement initiatives","Healthy margins with active portfolio optimisation","Excellent margins with dynamic pricing and continuous management"],dim:"Finance"},
+  {q:"How well defined and tested is your risk management strategy for supply or production failures?",opts:["No risk strategy — respond reactively to every crisis","Basic awareness without formal mitigation planning","Moderate management with contingency plans for key risks","Good framework with scenario planning and reserves built in","Comprehensive enterprise risk management with trigger-based protocols"],dim:"Risk"},
+  {q:"If you were to exit your manufacturing business today, how self-sustaining would it be?",opts:["No value without me — entirely owner dependent","Very low standalone value — heavily dependent on my involvement","Some value — can run partially but needs me for key decisions","Good standalone value — operates and grows without me","Exceptional value — systems, quality standards, teams deliver independently"],dim:"Systems"}
+],
+'Retail & E-commerce':[
+  {q:"How well do you understand your customer acquisition cost (CAC) and lifetime value (LTV)?",opts:["No idea — never calculated or tracked these metrics","Rough estimates but not tracked systematically at all","Calculated occasionally but rarely drives decisions","Clear understanding with monthly CAC and LTV tracking","Real-time CAC/LTV dashboards actively driving all decisions"],dim:"Finance"},
+  {q:"How optimised are your product listings, pricing, and conversion rates across channels?",opts:["No optimisation — listed and hoping for sales","Basic listings with minimal optimisation effort","Some A/B testing and pricing experiments conducted","Regular CRO work with good conversion improvement results","Full programme with continuous testing and performance benchmarks"],dim:"Sales"},
+  {q:"How effectively do you manage inventory turnover and avoid dead stock situations?",opts:["Significant dead stock — poor overall inventory management","Aware of the problem but no structured solution exists","Basic management with periodic stock audits conducted","Good inventory system with reorder point automation","Advanced management with demand forecasting — dead stock below 2%"],dim:"Operations"},
+  {q:"How well defined are your customer service processes and return handling protocols?",opts:["No defined process — handled entirely case by case","Basic guidelines exist but team operates inconsistently","Standard process documented with moderate consistency","Good process with measurable customer satisfaction scores","Excellent systems — first-contact resolution and CSAT above 90%"],dim:"Systems"},
+  {q:"How effectively do you use data analytics for merchandising and buying decisions?",opts:["All buying decisions based purely on gut feel","Some sales data reviewed but rarely drives decisions","Moderate data use — top performers identified and prioritised","Good data-driven buying with full category analytics","AI-powered merchandising with real-time demand signals"],dim:"Performance"},
+  {q:"How clearly defined are roles and responsibilities across your retail team?",opts:["No defined roles — everyone does everything","Some roles defined but significant overlap exists","Most roles clear but accountability gaps remain","All roles clearly defined with written job descriptions","Roles, KPIs, and accountability fully documented and enforced"],dim:"Structure"},
+  {q:"When you step away from operations for a week, what happens to your retail business?",opts:["Business essentially stops — major problems arise","Major slowdowns and constant emergency team calls","Moderate issues that require my remote guidance","Minor issues — team handles most things independently","Business runs completely without me — zero disruption"],dim:"Systems"},
+  {q:"How well do you track, understand, and systematically reduce customer return rates?",opts:["No tracking — returns are just a cost accepted","Basic return rate awareness but no root cause analysis","Return rates tracked with some active improvement efforts","Good management with root cause reduction programs","Systematic management with return rate below 3% consistently"],dim:"Operations"},
+  {q:"How effectively do you cross-sell, upsell, and retain existing customers long-term?",opts:["No retention strategy — purely transactional relationships","Occasional promotional emails but no structured programme","Basic loyalty or repeat purchase initiatives in place","Good retention with measurable repeat purchase rate tracking","Advanced ecosystem — personalised automation and lifecycle marketing"],dim:"Sales"},
+  {q:"How strong is your brand differentiation and recognition in your target market?",opts:["Very low visibility — competing purely on price","Some awareness but very hard to differentiate from competitors","Moderate presence with some unique value positioning","Good recognition with clear differentiating factors","Strong brand with loyal base and premium price positioning"],dim:"Sales"},
+  {q:"How do you measure and improve the productivity of your retail team?",opts:["No measurement — going entirely by gut feel","Occasional check-ins but no structured metrics","Basic KPIs tracked but inconsistently reviewed","Regular KPI reviews with clear accountability systems","Sophisticated tracking with real-time dashboards and incentives"],dim:"Performance"},
+  {q:"How well managed and optimised is your digital marketing spend and return on ad spend?",opts:["No tracking — spending purely on intuition","Basic spend tracking but ROI is very unclear","ROAS tracked with some channel optimisation done","Good ROAS management with regular channel optimisation","Highly optimised with automated bidding and precise attribution"],dim:"Finance"},
+  {q:"How scalable are your fulfilment and logistics systems for 3× order volume?",opts:["Current setup would break at any significant order increase","Major infrastructure investment required before scaling","Can handle moderate growth with some adjustments","Good scalability with planned warehouse and logistics improvements","Fully scalable — automated warehouse and 3PL partnerships active"],dim:"Systems"},
+  {q:"How effectively do you manage supplier relationships and negotiate purchasing terms?",opts:["Reactive purchasing — no formal supplier management","Basic supplier relationships with very limited leverage","Moderate management with some favourable terms achieved","Strong relationships with regular renegotiation and backup options","Strategic partnerships with exclusive terms and priority allocation"],dim:"Operations"},
+  {q:"How well do you track gross margin by SKU, category, and overall EBITDA?",opts:["No financial clarity — general profit/loss sense only","Overall margin awareness but no SKU-level understanding","Moderate tracking with some product-level P&L analysis","Good visibility with gross margin tracked by category","Complete intelligence — SKU profitability and real-time EBITDA"],dim:"Finance"},
+  {q:"How well defined is your 12-month growth strategy across channels and product ranges?",opts:["No strategy — reacting month to month completely","Vague growth direction without any documented plan","General strategy but lacks execution detail and milestones","Clear 12-month roadmap with channel and product priorities","Comprehensive strategy with quarterly milestones and budget allocation"],dim:"Leadership"},
+  {q:"How aligned is your team toward shared business goals and seasonal performance targets?",opts:["Team works in silos — no shared direction at all","Awareness of goals but very limited practical alignment","Moderate alignment with regular goal-sharing reviews","Strong alignment with clear individual and team targets","Full alignment — every member tracks their goal and performance"],dim:"Culture"},
+  {q:"How effectively do you use customer data and feedback to continuously improve?",opts:["No customer feedback collection or analysis done","Basic review monitoring with no structured improvement","Regular collection with some product and service improvements","Good feedback loop with systematic improvement programmes","Advanced voice-of-customer driving continuous product innovation"],dim:"Performance"},
+  {q:"How well managed is your cash flow, seasonal working capital, and credit exposure?",opts:["Frequent cash crunches — especially during off-season","Irregular cash flow with significant seasonal stress","Moderate management with some seasonal adjustment planning","Good planning with seasonal working capital strategy in place","Excellent optimisation with seasonal models and auto cash management"],dim:"Finance"},
+  {q:"If you were to exit your retail or e-commerce business today, how valuable would it be?",opts:["No value without me — I am the business entirely","Very low standalone value — heavily owner dependent","Some value but requires me for key operational decisions","Good standalone value — business operates and grows without me","Exceptional standalone — brand, systems, and team generate independent growth"],dim:"Systems"}
+],
+'Real Estate & Construction':[
+  {q:"How well documented are your project management processes from land acquisition to handover?",opts:["No standardisation — each project managed completely differently","Basic checklists exist but rarely followed consistently","Moderate standards with regular exceptions on live projects","Good PM framework with milestone tracking and accountability","Comprehensive system with digital tracking and automated reporting"],dim:"Systems"},
+  {q:"How effectively do you manage project costs, budget variances, and prevent overruns?",opts:["No cost management — overruns are accepted as normal","Basic budget tracking but frequent significant overruns","Moderate control with some variance management in place","Good control with regular reviews and structured variance reporting","Excellent management with real-time project costing and zero-tolerance protocols"],dim:"Finance"},
+  {q:"How clearly defined are roles and accountability for your project teams and contractors?",opts:["No defined roles — confusion and overlap is constant","Some roles defined but accountability boundaries often unclear","Most roles clear but significant accountability gaps remain","Clear roles with documented responsibilities and escalation paths","Comprehensive RACI matrices for every project — no ownership gaps"],dim:"Structure"},
+  {q:"When you step away from a live project for a week, what typically happens on site?",opts:["Projects stall or quality deteriorates significantly","Major issues arise requiring my immediate intervention","Moderate issues managed with frequent remote guidance from me","Minor issues — supervisors handle most independently","Projects run fully independently with quality and timelines maintained"],dim:"Systems"},
+  {q:"How effectively do you manage vendor and contractor quality, timelines, and compliance?",opts:["No vendor management — entirely reactive relationships","Basic tracking with occasional performance reviews","Moderate management with some quality controls in place","Good management with clear SLAs and performance scorecards","Best-in-class management with pre-qualification and real-time tracking"],dim:"Operations"},
+  {q:"How well do you manage your sales pipeline and conversion from lead to booking?",opts:["No formal process — highly reactive to every enquiry","Basic follow-up with very inconsistent conversion rates","Defined sales process with moderate pipeline visibility","Good CRM-driven management with conversion rate tracking","Sophisticated system with stage-wise analytics and automated nurturing"],dim:"Sales"},
+  {q:"How data-driven are your site selection, feasibility, and investment decisions?",opts:["Purely gut-based — very minimal data analysis used","Some market research done but decisions remain intuitive","Moderate feasibility analysis with basic financial modelling","Good data-driven decisions with structured feasibility frameworks","Advanced models using location data, simulations, and market intelligence"],dim:"Performance"},
+  {q:"How would you rate your project delivery track record on timelines and quality commitments?",opts:["Frequent delays and quality complaints are very common","Occasional on-time delivery with recurring quality issues","Moderate delivery performance with room for improvement","Good track record with minor issues resolved proactively","Excellent — consistent on-time, on-budget, exceeding quality commitments"],dim:"Operations"},
+  {q:"How effectively do you manage legal, regulatory, and compliance risks across all projects?",opts:["Minimal attention — reactive to issues only when they arise","Basic awareness but no structured compliance management","Moderate management with key compliance areas covered","Good systems with proactive regulatory monitoring in place","Comprehensive legal and compliance framework — all risks mitigated proactively"],dim:"Risk"},
+  {q:"How well aligned is your project team and site staff toward shared project goals?",opts:["Teams work in complete silos with no shared direction","Awareness of goals but limited practical day-to-day alignment","Moderate alignment with periodic goal-sharing meetings","Strong alignment with dashboards and regular team briefings","Full alignment — every member knows their target and accountability"],dim:"Culture"},
+  {q:"How clearly defined is your 12-month business development and project pipeline strategy?",opts:["No strategy — reacting to every opportunity as it appears","Vague direction without any documented pipeline strategy","General strategy with some active business development","Clear 12-month pipeline plan with target project categories","Comprehensive BD strategy with market targets and capital allocation"],dim:"Leadership"},
+  {q:"How well do you track profitability, margins, and IRR across your active project portfolio?",opts:["No visibility — projects complete before profitability is clear","Basic profit tracking but no IRR or return analysis done","Moderate tracking with project-level P&L reviews conducted","Good portfolio tracking with structured IRR analysis","Excellent — real-time project profitability and IRR dashboards active"],dim:"Finance"},
+  {q:"How scalable are your systems and team capacity to handle 2× more projects simultaneously?",opts:["Current setup would break immediately under any increased load","Major restructuring and senior hiring required before scaling","Can handle modest increases with some adjustments needed","Good scalability with planned team and system expansion roadmap","Fully scalable — standardised systems and trained PM bench ready"],dim:"Systems"},
+  {q:"How effectively do you manage payment milestone collections and project cash flow?",opts:["Cash flow is a constant challenge — collections are ad hoc","Basic milestone tracking with frequent significant collection delays","Moderate management with some payment delay issues","Good system with proactive follow-up and minimal receivables aging","Excellent — automated billing, legal protocols, near-zero aging"],dim:"Finance"},
+  {q:"How strong is your brand reputation in your target real estate or construction market?",opts:["Unknown — operating with minimal brand visibility","Some reputation but very inconsistent and limited market reach","Moderate brand presence with growing market recognition","Good reputation with strong satisfied client reference base","Strong market brand — preferred developer with premium pricing power"],dim:"Sales"},
+  {q:"How effectively do you use technology for site monitoring, reporting, and client communication?",opts:["Minimal technology — paper and phone-based management only","Basic project software used but with very limited adoption","Moderate adoption with key project functions now digitised","Good integration with site monitoring and client portal access","Advanced proptech — drone monitoring, IoT sensors, client-facing apps"],dim:"Systems"},
+  {q:"How well do you retain key project management talent and experienced site supervisors?",opts:["High attrition — losing skilled site staff very frequently","Moderate retention but significant experienced staff gaps exist","Decent retention with some structured recognition programmes","Strong retention with career paths and competitive compensation","Excellent retention with industry-leading development and very low attrition"],dim:"Culture"},
+  {q:"How well do you manage post-handover client relationships and generate referral business?",opts:["No post-sale relationship — all transactions are one-time","Occasional follow-up but no structured post-sale programme","Basic post-handover support with some referral generation","Good relationship management with active referral programmes","Excellent post-sale ecosystem with systematic referral generation"],dim:"Sales"},
+  {q:"How clearly defined is your risk management strategy for market downturns and project failures?",opts:["No risk strategy — respond reactively to every crisis","Basic awareness of major risks without formal mitigation plans","Moderate management with contingency plans for key project risks","Good framework with scenario planning and financial reserves built in","Comprehensive enterprise risk management — all risks quantified with protocols"],dim:"Risk"},
+  {q:"If you were to exit your real estate or construction business today, how valuable would it be?",opts:["No value without me — entirely owner and relationship dependent","Very low standalone value — heavily dependent on my involvement","Some value — business can run with limited support from me","Good standalone value — business operates and grows without me","Exceptional standalone — systems, brand, and team deliver independently"],dim:"Systems"}
+]
+};
+
+// All other industries use default questions
+['Healthcare & Pharmaceuticals','Food & Beverage / Restaurant','Technology & IT Services','Education & Training','Finance & Accounting','Logistics & Supply Chain','Professional Services','Hospitality & Tourism','Agriculture & Food Processing','Media & Marketing','Automotive','Textile & Fashion','Other'].forEach(function(ind) { QB[ind] = QB['default']; });
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+var cUser = null;
+var questions = [];
+var curQ = 0;
+var answers = [];
+var industryName = '';
+var userWA = '';
+
+// ════════════════════════════════════════════════════════
+// FIREBASE CONFIG — same config as admin.html
+// ════════════════════════════════════════════════════════
+var GX_FIREBASE_CONFIG = null;
+// EXAMPLE:
+// var GX_FIREBASE_CONFIG = {
+//   apiKey: "AIzaSy...",
+//   authDomain: "your-project.firebaseapp.com",
+//   databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+//   projectId: "your-project",
+//   storageBucket: "your-project.appspot.com",
+//   messagingSenderId: "123456789",
+//   appId: "1:123456789:web:abc123"
+// };
+
+var db = null;
+if (GX_FIREBASE_CONFIG) {
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(GX_FIREBASE_CONFIG);
+    db = firebase.database();
+  } catch(e) { db = null; }
+}
+
+// ════════════════════════════════════════════════════════
+// CLOUD HELPERS
+// ════════════════════════════════════════════════════════
+function fetchUsers(callback) {
+  if (db) {
+    db.ref('gx_users').once('value').then(function(snap) {
+      var val = snap.val();
+      var arr = [];
+      if (val) arr = Array.isArray(val) ? val.filter(Boolean) : Object.values(val).filter(Boolean);
+      // Also merge local
+      var local = [];
+      try { local = JSON.parse(localStorage.getItem('gx_users') || '[]'); } catch(e) {}
+      // Cloud wins
+      localStorage.setItem('gx_users', JSON.stringify(arr.length ? arr : local));
+      callback(arr.length ? arr : local);
+    }).catch(function() {
+      var local = [];
+      try { local = JSON.parse(localStorage.getItem('gx_users') || '[]'); } catch(e) {}
+      callback(local);
+    });
+  } else {
+    var local = [];
+    try { local = JSON.parse(localStorage.getItem('gx_users') || '[]'); } catch(e) {}
+    callback(local);
+  }
+}
+
+function saveReport(report) {
+  // Save to localStorage
+  var rpts = [];
+  try { rpts = JSON.parse(localStorage.getItem('gx_reports') || '[]'); } catch(e) {}
+  rpts.unshift(report);
+  localStorage.setItem('gx_reports', JSON.stringify(rpts));
+  // Save to Firebase
+  if (db) {
+    try { db.ref('gx_reports').push(report); } catch(e) {}
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// INIT — check UID in URL (auto-login via shared link)
+// ════════════════════════════════════════════════════════
+window.addEventListener('load', function() {
+  var uid = new URLSearchParams(window.location.search).get('uid');
+  if (!uid) return;
+
+  function tryLogin(users) {
+    var u = users.find(function(x) { return x && x.id === uid; });
+    if (!u) return; // no UID match — show login screen normally
+    if (u.status !== 'Active') {
+      document.getElementById('accessScreen').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 66px);"><div style="text-align:center;max-width:420px;padding:40px 24px;">'
+        + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:28px;font-weight:700;margin-bottom:16px;"><span style=\'color:#4a7fff\'>G</span>rowth<span style=\'color:#4a7fff\'>EX</span> Partners</div>'
+        + '<h2 style="font-family:\'Cormorant Garamond\',serif;font-size:22px;margin-bottom:12px;">Link Deactivated</h2>'
+        + '<p style="color:rgba(255,255,255,.45);font-size:14px;line-height:1.7;margin-bottom:20px;">This assessment link has been deactivated. Please contact your GrowthEX consultant.</p>'
+        + '<a href="https://www.growthexpartners.com" target="_blank" style="color:#4a7fff;font-size:13px;font-weight:600;text-decoration:none;">Visit growthexpartners.com →</a></div></div>';
+      return;
+    }
+    setupUser(u);
+    document.getElementById('accessScreen').style.display = 'none';
+    document.getElementById('introScreen').style.display = 'flex';
+  }
+
+  fetchUsers(tryLogin);
+});
+
+// ════════════════════════════════════════════════════════
+// ACCESS — username/password login
+// ════════════════════════════════════════════════════════
+document.getElementById('accessBtn').addEventListener('click', doAccess);
+document.getElementById('accPass').addEventListener('keydown', function(e) { if (e.key === 'Enter') doAccess(); });
+document.getElementById('accUser').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('accPass').focus(); });
+['accUser','accPass'].forEach(function(id) {
+  document.getElementById(id).addEventListener('input', function() {
+    var el = document.getElementById('accErr');
+    el.style.display = 'none'; el.textContent = '';
+    document.getElementById(id).style.borderColor = '';
+  });
+});
+
+function doAccess() {
+  var username = document.getElementById('accUser').value.trim();
+  var password = document.getElementById('accPass').value;
+  userWA = document.getElementById('accWA').value.trim();
+  var errEl = document.getElementById('accErr');
+
+  if (!username) {
+    document.getElementById('accUser').style.borderColor = '#fc8181';
+    document.getElementById('accUser').focus();
+    errEl.textContent = 'Please enter your username.';
+    errEl.style.display = 'block'; return;
+  }
+  if (!password) {
+    document.getElementById('accPass').style.borderColor = '#fc8181';
+    document.getElementById('accPass').focus();
+    errEl.textContent = 'Please enter your password.';
+    errEl.style.display = 'block'; return;
+  }
+
+  var btn = document.getElementById('accessBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Verifying...';
+
+  function attemptLogin(users) {
+    var u = users.find(function(x) { return x && x.username === username && x.password === password; });
+    btn.disabled = false;
+    btn.textContent = '🚀 Start My Assessment';
+    if (!u) {
+      document.getElementById('accUser').style.borderColor = '#fc8181';
+      document.getElementById('accPass').style.borderColor = '#fc8181';
+      document.getElementById('accPass').value = '';
+      errEl.textContent = 'Incorrect credentials. Please check and try again, or contact your GrowthEX consultant.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (u.status !== 'Active') {
+      errEl.textContent = 'Your access has been deactivated. Please contact GrowthEX Partners.';
+      errEl.style.display = 'block'; return;
+    }
+    setupUser(u);
+    document.getElementById('accessScreen').style.display = 'none';
+    document.getElementById('introScreen').style.display = 'flex';
+  }
+
+  fetchUsers(attemptLogin);
+}
+
+function setupUser(u) {
+  cUser = u;
+  industryName = u.industry;
+  questions = (QB[industryName] || QB['default']).slice(0, 20);
+  answers = new Array(20).fill(null);
+  document.getElementById('hChip').textContent = '👤 ' + u.name;
+  document.getElementById('hChip').style.display = 'block';
+  document.getElementById('introSub').textContent = '20 ' + industryName + '-specific questions designed to diagnose the real state of your business — revealing the precise path to your next growth level.';
+}
+
+// ═══════════════════════════════════════════════════════
+// INTRO → START
+// ═══════════════════════════════════════════════════════
+document.getElementById('startBtn').addEventListener('click', function() {
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('progBar').style.display = 'block';
+  document.getElementById('qScreen').style.display = 'block';
+  buildDots();
+  renderQ();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ═══════════════════════════════════════════════════════
+// QUESTION SCREEN
+// ═══════════════════════════════════════════════════════
+function buildDots() {
+  document.getElementById('progDots').innerHTML = questions.map(function(_, i) {
+    return '<div class="pdot" id="pd' + i + '"></div>';
+  }).join('');
+}
+
+function renderQ() {
+  var q = questions[curQ];
+  document.getElementById('qNum').textContent = 'Question ' + (curQ + 1) + ' of 20';
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qDim').textContent = industryName + ' · ' + q.dim;
+  document.getElementById('progCnt').textContent = (curQ + 1) + ' / 20';
+  document.getElementById('progFill').style.width = (((curQ + 1) / 20) * 100) + '%';
+  for (var i = 0; i < 20; i++) {
+    var d = document.getElementById('pd' + i);
+    if (d) d.className = 'pdot' + (i < curQ ? ' done' : i === curQ ? ' cur' : '');
+  }
+  var letters = ['A','B','C','D','E'];
+  document.getElementById('opts').innerHTML = q.opts.map(function(opt, i) {
+    return '<div class="opt' + (answers[curQ] === i ? ' selected' : '') + '" data-idx="' + i + '">'
+      + '<div class="opt-l">' + letters[i] + '</div>'
+      + '<div class="opt-t">' + opt + '</div>'
+    + '</div>';
+  }).join('');
+  document.getElementById('opts').querySelectorAll('.opt').forEach(function(el) {
+    el.addEventListener('click', function() { selectOpt(parseInt(this.getAttribute('data-idx'))); });
+  });
+  document.getElementById('prevBtn').disabled = curQ === 0;
+  document.getElementById('nextBtn').disabled = answers[curQ] === null;
+  document.getElementById('nextBtn').textContent = curQ === 19 ? 'View My Results →' : 'Next →';
+}
+
+function selectOpt(idx) {
+  answers[curQ] = idx;
+  document.querySelectorAll('.opt').forEach(function(o, i) { o.classList.toggle('selected', i === idx); });
+  document.getElementById('nextBtn').disabled = false;
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  if (answers[curQ] === null) return;
+  if (curQ === 19) { showResults(); return; }
+  curQ++;
+  renderQ();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.getElementById('prevBtn').addEventListener('click', function() {
+  if (curQ > 0) { curQ--; renderQ(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+
+document.getElementById('restartBtn').addEventListener('click', function() {
+  if (confirm('Restart the assessment? All answers will be cleared.')) {
+    curQ = 0; answers = new Array(20).fill(null); renderQ(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+document.getElementById('retryBtn').addEventListener('click', function() {
+  if (confirm('Retake the assessment? All answers will be cleared.')) {
+    curQ = 0; answers = new Array(20).fill(null);
+    document.getElementById('resultScreen').style.display = 'none';
+    document.getElementById('progBar').style.display = 'block';
+    document.getElementById('qScreen').style.display = 'block';
+    renderQ(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════════════════
+function showResults() {
+  document.getElementById('qScreen').style.display = 'none';
+  document.getElementById('progBar').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  var raw = answers.reduce(function(s, a) { return s + (a !== null ? a : 0); }, 0);
+  var score = Math.round((raw / (20 * 4)) * 100);
+
+  // Animate ring
+  setTimeout(function() {
+    var c = 421;
+    var offset = c - ((score / 100) * c);
+    var el = document.getElementById('ringCircle');
+    el.style.strokeDashoffset = offset;
+    el.style.stroke = scoreColor(score);
+    var n = 0;
+    var iv = setInterval(function() {
+      n = Math.min(n + 2, score);
+      document.getElementById('rNum').textContent = n;
+      if (n >= score) clearInterval(iv);
+    }, 18);
+  }, 300);
+
+  var cat = getCategory(score);
+  document.getElementById('rCat').textContent = cat.label;
+  document.getElementById('rCat').style.color = cat.color;
+  document.getElementById('rSummary').textContent = cat.summary;
+
+  // Dimension bars
+  var dims = {};
+  questions.forEach(function(q, i) {
+    if (!dims[q.dim]) dims[q.dim] = { t: 0, c: 0 };
+    dims[q.dim].t += (answers[i] || 0);
+    dims[q.dim].c++;
+  });
+  document.getElementById('dimBars').innerHTML = Object.entries(dims).map(function(d) {
+    var pct = Math.round((d[1].t / (d[1].c * 4)) * 100);
+    return '<div class="dim-item"><div class="dim-row"><span>' + d[0] + '</span><span style="color:' + scoreColor(pct) + '">' + pct + '%</span></div>'
+      + '<div class="dim-track"><div class="dim-fill" id="df_' + d[0].replace(/\W/g,'_') + '" style="width:0%;background:' + scoreColor(pct) + '"></div></div></div>';
+  }).join('');
+  setTimeout(function() {
+    Object.entries(dims).forEach(function(d) {
+      var pct = Math.round((d[1].t / (d[1].c * 4)) * 100);
+      var el = document.getElementById('df_' + d[0].replace(/\W/g,'_'));
+      if (el) el.style.width = pct + '%';
+    });
+  }, 600);
+
+  // Services
+  var svcs = getServices(score, dims);
+  document.getElementById('svcGrid').innerHTML = svcs.map(function(s) {
+    return '<div class="svc' + (s.urgent ? ' urgent' : '') + '">'
+      + '<div class="svc-ico">' + s.icon + '</div>'
+      + '<h3>' + s.name + '</h3>'
+      + '<p>' + s.desc + '</p>'
+      + '<span class="svc-badge' + (s.urgent ? ' urg' : '') + '">' + (s.urgent ? '🚨 Immediate Priority' : '✅ Recommended') + '</span>'
+    + '</div>';
+  }).join('');
+
+  // CTA text
+  document.getElementById('ctaTxt').textContent = score >= 65
+    ? 'Your business has strong foundations, but our analysis has identified specific growth accelerators that could significantly compound your results. Our team is ready to build your 90-day acceleration roadmap.'
+    : score >= 40
+    ? 'Your assessment has revealed 3–5 critical gaps that are actively limiting your business growth. Our NEXUS 360™ diagnostic creates a precise intervention roadmap within 7 days. Every week of delay compounds these gaps.'
+    : 'Your assessment reveals urgent structural issues requiring immediate expert intervention. These gaps are compounding in cost every single week. Our team is ready to mobilise within 48 hours with a full diagnostic and action plan.';
+
+  // Insights
+  document.getElementById('insightsWrap').innerHTML = questions.map(function(q, i) {
+    var pts = answers[i] || 0;
+    return '<div class="ins-item">'
+      + '<div class="ins-meta">Q' + (i + 1) + ' · ' + q.dim + '</div>'
+      + '<div class="ins-q">' + q.q + '</div>'
+      + '<div class="ins-a">→ ' + q.opts[pts] + '<span class="ins-pts" style="background:' + scoreColor(pts * 25) + ';color:#fff;">' + pts + '/4</span></div>'
+      + '<div class="ins-reco">→ ' + getInsight(q.dim, pts) + '</div>'
+    + '</div>';
+  }).join('');
+
+  // Save report to cloud + local
+  var report = {
+    id: 'r_' + Date.now(),
+    userId: cUser.id,
+    userName: cUser.name,
+    bizName: cUser.biz || '',
+    industry: industryName,
+    userWA: userWA || cUser.whatsapp || cUser.phone || '',
+    score: score,
+    date: new Date().toLocaleString('en-IN'),
+    ts: Date.now(),
+    answers: questions.map(function(q, i) {
+      return { q: q.q, selected: q.opts[answers[i] || 0], pts: answers[i] || 0, dim: q.dim };
+    })
+  };
+  saveReport(report);
+  window._gxReport = report;
+  window._gxScore = score;
+  window._gxDims = dims;
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPER FUNCTIONS
+// ═══════════════════════════════════════════════════════
+function scoreColor(s) {
+  if (s >= 75) return '#38a169';
+  if (s >= 50) return '#d69e2e';
+  if (s >= 30) return '#e67e22';
+  return '#e53e3e';
+}
+
+function getCategory(s) {
+  if (s >= 75) return { label: '🏆 High Performer', color: '#38a169', summary: 'Your business demonstrates strong foundational health — solid systems, clear structure, and a team that functions well. The focus now is optimisation, strategic scaling, and removing the remaining constraints preventing exceptional, compounding growth.' };
+  if (s >= 50) return { label: '⚡ Growth Ready — Gaps Identified', color: '#d69e2e', summary: 'Your business has genuine potential, but critical structural and operational gaps are silently limiting your growth trajectory. Without addressing these now, you risk plateauing — or losing ground to competitors investing in systems. The right intervention at this stage creates disproportionate returns.' };
+  if (s >= 30) return { label: '⚠️ Needs Urgent Structural Work', color: '#e67e22', summary: 'Your assessment reveals multiple interconnected gaps compounding in impact every week. Team misalignment, unclear processes, and owner dependency are not random — they are systemic. Without a structured intervention plan, these gaps will continue to widen and limit your growth ceiling permanently.' };
+  return { label: '🚨 Critical — Immediate Action Required', color: '#e53e3e', summary: 'Your assessment shows significant vulnerabilities across core business dimensions. These are not surface-level problems — they represent deep structural gaps posing serious risks to your business stability and future. Immediate expert intervention is not just recommended — it is urgent. Every week of inaction increases the cost of resolution.' };
+}
+
+function getServices(score, dims) {
+  function pct(name) { var d = dims[name]; return d ? Math.round((d.t / (d.c * 4)) * 100) : 50; }
+  var worstDim = Object.entries(dims).sort(function(a, b) { return (a[1].t / a[1].c) - (b[1].t / b[1].c); });
+  var worst = worstDim.length ? worstDim[0][0] : 'Operations';
+  var svcs = [];
+  if (score < 75) svcs.push({ icon: '🔍', urgent: score < 45, name: 'NEXUS 360™ Business Diagnostic', desc: 'A complete 4–7 day deep diagnostic across all 7 business dimensions. Your assessment identified critical gaps in ' + worst + '. NEXUS 360™ maps every hidden gap, risk, and opportunity with a precise, sequenced action roadmap that removes all guesswork.' });
+  if (score < 58 || pct('Performance') < 50 || pct('Systems') < 45) svcs.push({ icon: '🧠', urgent: score < 35, name: 'Intellixa™ Intelligence System', desc: 'Your business is making decisions without adequate intelligence infrastructure. Intellixa™ installs a complete business intelligence layer — real-time dashboards, KPI frameworks, and performance analytics — enabling data-driven decisions that compound your growth over time.' });
+  if (pct('Structure') < 55 || pct('Systems') < 50) svcs.push({ icon: '⚙️', urgent: pct('Structure') < 40, name: 'SOP & Organisational Architecture', desc: 'Your assessment reveals critical gaps in role clarity and process documentation. Without clear SOPs and organisational structure, your business remains vulnerable to key-person dependency and unscalable operations. This is the foundational work everything else is built on.' });
+  if (pct('Culture') < 55 || pct('Leadership') < 50) svcs.push({ icon: '👥', urgent: false, name: 'Team Alignment & Leadership Development', desc: 'Your team is working hard but not in unified direction. Our alignment program installs shared goal frameworks, accountability systems, and communication structures that transform individual effort into collective momentum — measurably within 30 days.' });
+  if (score >= 65) svcs.push({ icon: '📈', urgent: false, name: 'Growth Acceleration Program', desc: 'Your foundations are in place — now it is time to scale deliberately. Our Growth Acceleration Program maps your 12-month expansion strategy: new markets, revenue streams, team scaling, and strategic partnerships with clear quarterly milestones and built-in accountability.' });
+  if (pct('Finance') < 50) svcs.push({ icon: '💰', urgent: pct('Finance') < 35, name: 'Financial Intelligence & Cost Optimisation', desc: 'Your assessment shows limited financial visibility. Our Financial Intelligence program installs complete cost tracking, per-product profitability analysis, and cash flow forecasting — giving you the financial control to make high-confidence business decisions every day.' });
+  return svcs.slice(0, 4);
+}
+
+function getInsight(dim, pts) {
+  var bank = {
+    Structure: ["Defining roles is your single highest-leverage starting action — begin with a RACI matrix immediately.", "Significant role clarity work needed — overlapping responsibilities are silently destroying efficiency.", "Structure partially in place — formalising job descriptions will unlock significant team performance.", "Good structure — minor clarifications will strengthen accountability further.", "Excellent structure — evolve systematically as you scale."],
+    Systems: ["Your business is entirely owner-dependent — installing even basic SOPs will immediately reduce your load.", "Critical system gaps — documenting your top 5 processes would transform operational consistency overnight.", "Systems exist but are incomplete — consistent enforcement will significantly reduce daily friction.", "Good systems in place — optimisation and automation are your next leverage points.", "World-class systems — ensure they evolve with growth continuously."],
+    Operations: ["Operations are chaotic — systematic process mapping of highest-impact processes is the urgent first step.", "Slow and inconsistent — documentation and team training will create immediate measurable improvement.", "Moderate health — targeted improvements in weakest areas will drive noticeable efficiency gains.", "Strong operations — continuous improvement and strategic automation are your next efficiency frontiers.", "Operational excellence — model and share these practices as you scale."],
+    Finance: ["Critical financial blind spots — immediate clarity on margins and cash position is non-negotiable.", "Limited financial awareness — installing basic P&L visibility is an urgent priority.", "Moderate visibility — detailed cost analysis will significantly improve decision quality.", "Good financial management — advanced analytics and forecasting are your next step.", "Excellent financial intelligence — position this as a competitive advantage."],
+    Performance: ["No measurement means no improvement — installing basic team KPIs immediately creates accountability.", "Inconsistent measurement is undermining accountability — a structured performance system is urgently needed.", "Moderate tracking — consistency and consequence management will unlock significant team potential.", "Good performance systems — advanced analytics and dashboards are your next frontier.", "Exceptional performance culture — sustain and replicate this as you scale."],
+    Leadership: ["Leadership and strategic direction urgently need development — the business has no consistent direction.", "Leadership gaps are creating strategic drift — decision-making clarity must be addressed immediately.", "Moderate leadership strength — developing your management team will significantly multiply your capacity.", "Strong leadership — investing in talent development will accelerate your growth further.", "Exceptional leadership — codify your principles and actively develop the next generation."],
+    Culture: ["Team culture is fragmented — silently destroying productivity, retention, and customer experience simultaneously.", "Low team cohesion is a critical drag — cultural intervention and alignment are urgently needed.", "Moderate culture — structured alignment and recognition will significantly transform team output.", "Good culture — deepening engagement programmes will take performance to the next level.", "Exceptional culture — protect, document, and amplify it deliberately as you scale."],
+    Sales: ["Sales are entirely ad hoc — installing a basic CRM and defined process is your most urgent revenue action.", "Sales consistency is very low — a structured pipeline with accountability will create predictable growth.", "Moderate effectiveness — improving conversion and adding retention programmes will drive significant uplift.", "Good sales performance — analytics, channel diversification, and partnerships are your next revenue levers.", "Excellent sales engine — scale systematically into new markets and segments."],
+    Risk: ["Multiple critical risks exposed — immediate risk mapping and top-3 mitigation plans are non-negotiable.", "Significant exposure — a structured risk management framework will protect against preventable crises.", "Moderate risk management — formalising your approach will significantly reduce business vulnerability.", "Good risk management — advanced scenario planning and continuity testing is your next maturity step.", "Excellent risk management — industry-leading practices that both protect and create competitive advantage."]
+  };
+  return (bank[dim] || bank['Systems'])[Math.min(pts, 4)];
+}
+
+// ═══════════════════════════════════════════════════════
+// WHATSAPP SHARE
+// ═══════════════════════════════════════════════════════
+document.getElementById('waShareBtn').addEventListener('click', shareWA);
+
+function shareWA() {
+  var r = window._gxReport;
+  var score = window._gxScore;
+  var dims = window._gxDims;
+  if (!r) return;
+  var cat = getCategory(score);
+  var svcs = getServices(score, dims || {});
+  var top = svcs && svcs[0] ? svcs[0].name : 'NEXUS 360™ Business Diagnostic';
+
+  var msg = '*GrowthEX Partners — Business Health Assessment Report*\n'
+    + '━━━━━━━━━━━━━━━━━━━━━━━\n'
+    + '👤 *Name:* ' + r.userName + '\n'
+    + (r.bizName ? '🏢 *Business:* ' + r.bizName + '\n' : '')
+    + '🏭 *Industry:* ' + r.industry + '\n'
+    + '📅 *Date:* ' + r.date + '\n'
+    + '━━━━━━━━━━━━━━━━━━━━━━━\n'
+    + '📊 *OVERALL SCORE: ' + score + '/100*\n'
+    + '🏷 *Category: ' + cat.label + '*\n'
+    + '━━━━━━━━━━━━━━━━━━━━━━━\n'
+    + '🎯 *Top Recommended Solution:*\n'
+    + top + '\n\n'
+    + '📌 *Key Insight:*\n'
+    + (score < 50
+      ? 'My assessment has revealed multiple critical gaps in my business requiring immediate expert intervention. I would like to understand the recommended solutions in detail and schedule a Business Clarity Session.'
+      : score < 70
+      ? 'My assessment has identified structural and operational gaps limiting my business growth. I am ready to explore how GrowthEX can help me address these systematically and create a clear growth roadmap.'
+      : 'My business has a strong foundation and I would like to understand how to accelerate growth and scale effectively with GrowthEX structured programmes.') + '\n\n'
+    + '📞 *I would like to schedule a Business Clarity Session to discuss my results.*\n\n'
+    + '🌐 www.growthexpartners.com';
+
+  // Send to admin number
+  window.open('https://wa.me/919670024172?text=' + encodeURIComponent(msg), '_blank');
+
+  // Also send self-copy if user provided WA
+  var wa = (r.userWA || userWA || '').replace(/\D/g, '');
+  if (wa && wa.length >= 10) {
+    if (wa.length === 10) wa = '91' + wa;
+    setTimeout(function() {
+      var selfMsg = '*My GrowthEX Business Health Report*\n'
+        + 'Score: *' + score + '/100* · ' + cat.label + '\n'
+        + 'Industry: ' + r.industry + ' · Date: ' + r.date + '\n\n'
+        + 'Top Recommendation: ' + top + '\n\n'
+        + 'Full report shared with GrowthEX Partners for personalised strategy session.\n'
+        + 'www.growthexpartners.com';
+      window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(selfMsg), '_blank');
+    }, 1000);
+  }
+}
+</script>
+</body>
+</html>
