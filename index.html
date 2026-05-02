@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrowthEX Partners — Business Growth Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1e4fc2;--steel:#2d5be3;--accent:#4a7fff;--dark:#05080f;--card:rgba(255,255,255,0.045);--border:rgba(255,255,255,0.08);}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark);color:#fff;overflow-x:hidden;min-height:100vh;}
+.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 85% 55% at 50% -5%,rgba(30,79,194,0.32) 0%,transparent 65%),linear-gradient(160deg,#03060e 0%,#07091a 50%,#090d1f 100%);}
+.grid-lines{position:fixed;inset:0;z-index:0;opacity:.028;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:60px 60px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 44px;background:rgba(5,8,15,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;text-decoration:none;color:#fff;}.logo span{color:#4a7fff;}
+.nav-links{display:flex;gap:10px;align-items:center;}
+.nav-btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:'Inter',sans-serif;transition:all .25s;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.72);background:transparent;display:inline-block;}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:#fff;}
+.nav-btn.primary{background:linear-gradient(135deg,var(--blue),var(--steel));border-color:transparent;color:#fff;box-shadow:0 4px 18px rgba(30,79,194,.38);}
+.nav-btn.primary:hover{transform:translateY(-1px);box-shadow:0 7px 26px rgba(30,79,194,.55);}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 60px;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(74,127,255,.1);border:1px solid rgba(74,127,255,.3);color:#7aadff;padding:8px 20px;border-radius:40px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;}
+.badge-dot{width:6px;height:6px;background:#4a7fff;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.6)}}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(46px,8vw,96px);font-weight:700;line-height:1.04;letter-spacing:-.5px;margin-bottom:24px;}
+h1 em{font-style:italic;background:linear-gradient(135deg,#4a7fff,#a8caff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:rgba(255,255,255,.56);max-width:600px;line-height:1.8;margin-bottom:16px;}
+.hero-credit{font-size:13px;color:#4a7fff;font-weight:600;margin-bottom:52px;}
+
+/* TIPS */
+.tips-wrap{position:relative;z-index:1;}
+.tips-label{text-align:center;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#4a7fff;margin-bottom:30px;}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;max-width:1020px;margin:0 auto 64px;padding:0 24px;}
+.tip{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px 26px;position:relative;overflow:hidden;transition:transform .35s,border-color .35s;cursor:default;}
+.tip:hover{transform:translateY(-6px);border-color:rgba(74,127,255,.3);}
+.tip-n{position:absolute;top:10px;right:18px;font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:700;color:rgba(74,127,255,.07);line-height:1;}
+.tip-icon{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--steel));display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;box-shadow:0 6px 18px rgba(30,79,194,.34);}
+.tip h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;margin-bottom:10px;line-height:1.3;}
+.tip p{font-size:13px;color:rgba(255,255,255,.54);line-height:1.75;}
+.tip-stat{display:inline-block;margin-top:14px;background:rgba(74,127,255,.12);border:1px solid rgba(74,127,255,.26);color:#7aadff;padding:4px 13px;border-radius:20px;font-size:12px;font-weight:700;}
+
+/* CTA SECTION */
+.cta-wrap{position:relative;z-index:1;text-align:center;padding:0 24px 80px;}
+.cta-label{font-size:13px;color:rgba(255,255,255,.32);margin-bottom:26px;}
+.cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;padding:18px 38px;border-radius:13px;border:none;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .3s;}
+.cta-btn.main{background:linear-gradient(135deg,var(--blue),var(--steel));color:#fff;box-shadow:0 8px 28px rgba(30,79,194,.42);}
+.cta-btn.main:hover{transform:translateY(-3px);box-shadow:0 15px 42px rgba(30,79,194,.6);}
+.cta-btn.alt{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.16);color:#fff;}
+.cta-btn.alt:hover{background:rgba(255,255,255,.1);transform:translateY(-3px);}
+.trust-bar{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,.3);}
+.trust-dot{width:5px;height:5px;background:#4a7fff;border-radius:50%;opacity:.6;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.visible{display:flex;}
+.modal{background:linear-gradient(160deg,#0f1b30,#0c1422);border:1px solid rgba(255,255,255,.09);border-radius:24px;padding:44px;max-width:540px;width:100%;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.6);max-height:90vh;overflow-y:auto;animation:mIn .32s ease;}
+@keyframes mIn{from{opacity:0;transform:scale(.93) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-close{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.modal-close:hover{background:rgba(255,255,255,.14);}
+.modal h2{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;margin-bottom:7px;}
+.modal-sub{color:rgba(255,255,255,.42);font-size:13px;line-height:1.65;margin-bottom:28px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.48);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:12px 14px;border-radius:9px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);color:#fff;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .25s;-webkit-appearance:none;}
+.fg input::placeholder,.fg textarea::placeholder{color:rgba(255,255,255,.25);}
+.fg select option{background:#0f1b30;color:#fff;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,79,194,.13);}
+.fg textarea{resize:vertical;}
+.submit-btn{width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--blue),var(--steel));color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;margin-top:6px;}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,79,194,.5);}
+.form-note{text-align:center;font-size:11px;color:rgba(255,255,255,.2);margin-top:12px;}
+.success-panel{display:none;text-align:center;padding:16px 0;}
+.success-icon{font-size:56px;margin-bottom:14px;}
+.success-panel h3{font-family:'Cormorant Garamond',serif;font-size:25px;margin-bottom:12px;}
+.success-panel p{color:rgba(255,255,255,.52);font-size:14px;line-height:1.75;}
+.success-panel a{color:#4a7fff;font-weight:600;text-decoration:none;}
+
+@media(max-width:680px){
+  nav{padding:0 16px;}
+  .nav-btn:not(.primary){display:none;}
+  .hero{padding:88px 18px 40px;}
+  .tips-grid{grid-template-columns:1fr;}
+  .frow{grid-template-columns:1fr;}
+  .modal{padding:28px 18px;}
+  .cta-btn{padding:15px 24px;font-size:15px;}
+  .cta-row{flex-direction:column;align-items:stretch;max-width:340px;margin-left:auto;margin-right:auto;}
+}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grid-lines"></div>
+
+<nav>
+  <a href="index.html" class="logo"><span>G</span>rowth<span>EX</span> Partners</a>
+  <div class="nav-links">
+    <a href="https://www.growthexpartners.com" target="_blank" class="nav-btn">Our Website</a>
+    <a href="admin.html" class="nav-btn primary">Admin Panel</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="badge"><span class="badge-dot"></span>GrowthEX Partners — Exclusive Insight</div>
+  <h1>Is Your Business<br><em>Truly Growing</em><br>Or Just Surviving?</h1>
+  <p class="hero-sub">Most owners confuse activity with progress. We use deep diagnostic systems to expose exactly what is holding your business back — and build the precise roadmap to break through.</p>
+  <p class="hero-credit">Shared exclusively for you by <strong>GrowthEX Partners</strong></p>
+</section>
+
+<div class="tips-wrap">
+  <div class="tips-label">⚡ 3 Proven Ways to Increase Business Profit in 30 Days</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-n">1</div><div class="tip-icon">🔍</div><h3>Diagnose Hidden Revenue Leaks</h3><p>Most businesses silently lose 20–35% of potential revenue to invisible inefficiencies. A structured diagnostic maps every gap before it becomes a crisis.</p><span class="tip-stat">Avg. savings: ₹2–8L/month</span></div>
+    <div class="tip"><div class="tip-n">2</div><div class="tip-icon">⚙️</div><h3>Install Systems That Run Without You</h3><p>If your business stops when you stop, you own a job — not a business. Documented SOPs and accountability structures multiply your team's output automatically.</p><span class="tip-stat">Productivity up 40–60%</span></div>
+    <div class="tip"><div class="tip-n">3</div><div class="tip-icon">🎯</div><h3>Align Your Team to One Direction</h3><p>Team misalignment silently costs businesses crores every year. When every person knows their role, KPI, and accountability — output compounds exponentially.</p><span class="tip-stat">Growth multiplier: 2–4×</span></div>
+  </div>
+</div>
+
+<div class="cta-wrap">
+  <p class="cta-label">What would you like to do next?</p>
+  <div class="cta-row">
+    <button class="cta-btn main" id="openGrowBtn">📈 Grow My Business →</button>
+    <a href="profrnd.html" class="cta-btn alt">🤝 Explore ProFrnd →</a>
+  </div>
+  <div class="trust-bar">
+    <div class="trust-item"><div class="trust-dot"></div>NEXUS 360™ Diagnostic</div>
+    <div class="trust-item"><div class="trust-dot"></div>Intellixa™ Intelligence</div>
+    <div class="trust-item"><div class="trust-dot"></div>100% Confidential</div>
+    <div class="trust-item"><div class="trust-dot"></div>Results in 7–30 Days</div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="growModal">
+  <div class="modal">
+    <button class="modal-close" id="closeModalBtn">✕</button>
+    <div id="formPanel">
+      <h2>Request Your Assessment</h2>
+      <p class="modal-sub">Our GrowthEX consultant will reach out within 24 hours with a personalised growth roadmap — complimentary, no obligation.</p>
+      <div class="frow">
+        <div class="fg"><label>Full Name *</label><input type="text" id="r_name" placeholder="Rajesh Sharma"></div>
+        <div class="fg"><label>Business Name</label><input type="text" id="r_biz" placeholder="Sharma Enterprises"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>WhatsApp Number *</label><input type="tel" id="r_phone" placeholder="+91 98765 43210"></div>
+        <div class="fg"><label>Email Address</label><input type="email" id="r_email" placeholder="rajesh@email.com"></div>
+      </div>
+      <div class="fg">
+        <label>Your Industry *</label>
+        <select id="r_industry">
+          <option value="">Select your industry...</option>
+          <option>Manufacturing &amp; Production</option>
+          <option>Retail &amp; E-commerce</option>
+          <option>Real Estate &amp; Construction</option>
+          <option>Healthcare &amp; Pharmaceuticals</option>
+          <option>Food &amp; Beverage / Restaurant</option>
+          <option>Technology &amp; IT Services</option>
+          <option>Education &amp; Training</option>
+          <option>Finance &amp; Accounting</option>
+          <option>Logistics &amp; Supply Chain</option>
+          <option>Professional Services</option>
+          <option>Hospitality &amp; Tourism</option>
+          <option>Agriculture &amp; Food Processing</option>
+          <option>Media &amp; Marketing</option>
+          <option>Automotive</option>
+          <option>Textile &amp; Fashion</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>Biggest Business Challenge</label><textarea id="r_challenge" rows="3" placeholder="e.g. Profits stagnant despite growing sales, team not aligned, owner involved in everything..."></textarea></div>
+      <button class="submit-btn" id="submitReqBtn">🚀 Submit Assessment Request</button>
+      <p class="form-note">100% confidential · No spam · Our expert calls you personally</p>
+    </div>
+    <div class="success-panel" id="successPanel">
+      <div class="success-icon">✅</div>
+      <h3>Request Received!</h3>
+      <p>Our GrowthEX consultant will contact you on WhatsApp within <strong>24 hours</strong> to schedule your complimentary Business Clarity Session.<br><br>Explore our full suite at<br><a href="https://www.growthexpartners.com" target="_blank">growthexpartners.com →</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Open modal
+document.getElementById('openGrowBtn').addEventListener('click', function() {
+  document.getElementById('growModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+});
+
+// Close modal - button
+document.getElementById('closeModalBtn').addEventListener('click', function() {
+  document.getElementById('growModal').classList.remove('visible');
+  document.body.style.overflow = '';
+});
+
+// Close modal - backdrop click
+document.getElementById('growModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+});
+
+// Close modal - ESC key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('growModal').classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+});
+
+// Submit form
+document.getElementById('submitReqBtn').addEventListener('click', function() {
+  var name = document.getElementById('r_name').value.trim();
+  var phone = document.getElementById('r_phone').value.trim();
+  var industry = document.getElementById('r_industry').value;
+  if (!name) { alert('Please enter your name.'); return; }
+  if (!phone) { alert('Please enter your WhatsApp number.'); return; }
+  if (!industry) { alert('Please select your industry.'); return; }
+
+  var req = {
+    id: 'req_' + Date.now(),
+    name: name,
+    phone: phone,
+    biz: document.getElementById('r_biz').value.trim(),
+    industry: industry,
+    email: document.getElementById('r_email').value.trim(),
+    challenge: document.getElementById('r_challenge').value.trim(),
+    date: new Date().toLocaleString('en-IN'),
+    status: 'New'
+  };
+
+  var reqs = [];
+  try { reqs = JSON.parse(localStorage.getItem('gx_requests') || '[]'); } catch(e) { reqs = []; }
+  reqs.unshift(req);
+  localStorage.setItem('gx_requests', JSON.stringify(reqs));
+
+  document.getElementById('formPanel').style.display = 'none';
+  document.getElementById('successPanel').style.display = 'block';
+});
+</script>
+</body>
+</html>
